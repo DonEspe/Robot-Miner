@@ -37,25 +37,78 @@ class GameScene: SKScene {
         player.sprite = SKSpriteNode(texture: player.texture)
         player.sprite.position = player.position
         player.sprite.name = "player"
+        player.sprite.zPosition = 10
         addChild(player.sprite)
 
         scoreLabel.position = CGPoint(x: 0, y: 300)
         camera?.addChild(scoreLabel)
 
-        for i in 0...30 {
-            let crystal = SKSpriteNode(texture: .init(image: .crystals1))
-            crystal.position.x = CGFloat.random(in: -500...500)
+        for i in 0...40 {
+            let crystal = SKSpriteNode(texture: .init(image: .marsRockLarge))
+            crystal.position.x = CGFloat.random(in: -750...750)
             crystal.position.y = CGFloat.random(in: -1000...1000)
             crystal.name = "rock" + String(i)
 
-            rocks[crystal.name ?? ""] = (Rock(position: crystal.position, texture: crystal.texture ?? .init(image: .rockGreyLarge), value: Int.random(in: 1...40), remaining: 1.0, name: crystal.name ?? ""))
+            rocks[crystal.name ?? ""] = (Rock(position: crystal.position, type: RockType.allCases.randomElement()!, value: Int.random(in: 1...40), remaining: 6.0, name: crystal.name ?? ""))
             addChild(crystal)
         }
     }
     
     
     func touchDown(atPoint pos : CGPoint) {
-        player.moveTo = pos
+        let touchedNodes = nodes(at: pos)
+        var touchedRock = false
+        for node in touchedNodes {
+            guard node is SKSpriteNode else { continue }
+            if let name = node.name {
+                if name.contains("rock") {
+                    if player.distance(toPoint: node.position) < 40 {
+                        touchedRock = true
+
+                        if let found = rocks[node.name ?? ""] {
+                            if found.remaining > 1 {
+                                DispatchQueue.main.async {
+                                    self.rocks[node.name!]?.remaining -= 1
+                                }
+                            }
+
+//                            if found.remaining > 1 {
+//                                DispatchQueue.main.async {
+//                                    rocks[node.name!]?.texture = found.getTexture()
+//                                }
+//                            }
+
+                            if found.remaining <= 1 && found.type != .rubble {
+                                DispatchQueue.main.async {
+                                    self.rocks[node.name!]?.type = .rubble
+                                }
+                                score += found.value
+                            }
+                        }
+
+//                        for item in self.children {
+//                            if node.name == item.name {
+//                                item.removeFromParent()
+//                            }
+//                        }
+                        let sprite = childNode(withName: node.name!) as? SKSpriteNode
+                        sprite?.texture = rocks[node.name!]?.getTexture()
+                        print("Texture: ", sprite?.texture?.description)
+
+                        DispatchQueue.main.async {
+                            let tempTexture = self.rocks[node.name!]?.getTexture()
+                            self.rocks[node.name!]?.texture = tempTexture!
+                        }
+                    } else {
+                        print("touched: ", name," but it was too far away to dig.")
+                    }
+                }
+
+            }
+        }
+        if !touchedRock {
+            player.moveTo = pos
+        }
     }
     
     func touchMoved(toPoint pos : CGPoint) {
@@ -117,7 +170,7 @@ class GameScene: SKScene {
 
     func displayRocks(list: [String: Rock]) {
         for item in list {
-            //do stuff
+
         }
     }
 
@@ -161,21 +214,27 @@ class GameScene: SKScene {
 
         let foundRocks = checkForRocks(position: player.position, range: player.sprite.size.width / 2 + 15)
 
-        if !foundRocks.isEmpty {
-            player.moveTo = player.position
-        }
-        print("before:", rocks.count)
-
         for rock in foundRocks {
-            for node in self.children {
-                if node.name == rock.name {
-                    node.removeFromParent()
-                }
+            if rock.type != .rubble || rock.remaining > 1 {
+                player.moveTo = player.position
             }
-            score += rock.value
-            rocks[rock.name] = nil
         }
-        print("after: ", rocks.count)
+
+//        if !foundRocks.isEmpty {
+//            player.moveTo = player.position
+//        }
+
+        //remove rock if ran into
+//
+//        for rock in foundRocks {
+//            for node in self.children {
+//                if node.name == rock.name {
+//                    node.removeFromParent()
+//                }
+//            }
+//            score += rock.value
+//            rocks[rock.name] = nil
+//        }
 
         displayRocks(list: rocks)
 
