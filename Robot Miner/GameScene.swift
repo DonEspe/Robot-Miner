@@ -15,6 +15,7 @@ class GameScene: SKScene {
     var player = Rover()
     var rover = SKSpriteNode()
     var scoreLabel = SKLabelNode(text: "Score: 0")
+    var fuelLabel = SKLabelNode(text: "Fuel: 0")
     var rocks = [String: Rock]()
     var score = 0 {
         didSet {
@@ -40,8 +41,17 @@ class GameScene: SKScene {
         player.sprite.zPosition = 10
         addChild(player.sprite)
 
-        scoreLabel.position = CGPoint(x: 0, y: 300)
+        scoreLabel.position = CGPoint(x: -100, y: 340)
+        scoreLabel.zPosition = 100
+        scoreLabel.fontName = "AvenirNext-Bold"
+        scoreLabel.fontSize = 30
         camera?.addChild(scoreLabel)
+
+        fuelLabel.position = CGPoint(x: 100, y: 340)
+        fuelLabel.zPosition = 100
+        fuelLabel.fontName = "AvenirNext-Bold"
+        fuelLabel.fontSize = 30
+        camera?.addChild(fuelLabel)
 
         for i in 0...40 {
             let crystal = SKSpriteNode(texture: .init(image: .marsRockLarge))
@@ -62,7 +72,7 @@ class GameScene: SKScene {
             guard node is SKSpriteNode else { continue }
             if let name = node.name {
                 if name.contains("rock") {
-                    if player.distance(toPoint: node.position) < 40 {
+                    if player.distance(toPoint: node.position) < player.sprite.size.width / 2 + 25  {
                         touchedRock = true
 
                         if let found = rocks[node.name ?? ""] {
@@ -71,7 +81,6 @@ class GameScene: SKScene {
                                     self.rocks[node.name!]?.remaining -= 1
                                 }
                             }
-
 //                            if found.remaining > 1 {
 //                                DispatchQueue.main.async {
 //                                    rocks[node.name!]?.texture = found.getTexture()
@@ -93,7 +102,7 @@ class GameScene: SKScene {
 //                        }
                         let sprite = childNode(withName: node.name!) as? SKSpriteNode
                         sprite?.texture = rocks[node.name!]?.getTexture()
-                        print("Texture: ", sprite?.texture?.description)
+//                        print("Texture: ", sprite?.texture?.description)
 
                         DispatchQueue.main.async {
                             let tempTexture = self.rocks[node.name!]?.getTexture()
@@ -139,6 +148,9 @@ class GameScene: SKScene {
     }
 
     func moveRover(rover: Rover) -> CGPoint {
+        if rover.fuel <= 0 {
+            return rover.position
+        }
         var position = rover.position
         if rover.moveTo.x != rover.position.x || rover.moveTo.y != rover.position.y {
             let xDist = rover.moveTo.x - rover.position.x
@@ -197,6 +209,9 @@ class GameScene: SKScene {
     func checkForRocks(position: CGPoint, range: CGFloat) -> [Rock] {
         var foundRock = [Rock]()
         for rock in rocks {
+            if rock.value.remaining < 2 && rock.value.type == .rubble {
+                continue
+            }
             if abs(rock.value.position.x - position.x) < range && abs(rock.value.position.y - position.y) < range {
                 foundRock.append(rock.value)
             }
@@ -206,13 +221,22 @@ class GameScene: SKScene {
 
     override func update(_ currentTime: TimeInterval) {
         let newPlayerPosition = moveRover(rover: player)
+        let oldPlayerPosition = player.position
         if player.moveTo.x != player.position.x || player.moveTo.y != player.position.y {
             player.sprite.zRotation = player.rotate(toPoint: newPlayerPosition)
         }
-        player.position = moveRover(rover: player)
-        player.sprite.position = player.position
 
         let foundRocks = checkForRocks(position: player.position, range: player.sprite.size.width / 2 + 15)
+        if foundRocks.isEmpty {
+            player.position = moveRover(rover: player)
+            player.sprite.position = player.position
+        }
+
+        let moveDist = player.distance(toPoint: oldPlayerPosition)
+        player.fuel -= moveDist / 100
+
+        fuelLabel.text = "Fuel: " + String(Int(player.fuel))
+
 
         for rock in foundRocks {
             if rock.type != .rubble || rock.remaining > 1 {

@@ -16,6 +16,13 @@ struct Rover {
     var zRotation = 0.0
     var texture = SKTexture(image: .robot3Dblue)
     var speed = 5.0
+    var fuel = 100.0 {
+        didSet {
+            if fuel < 0 {
+                fuel = 0
+            }
+        }
+    }
 
     mutating func rotate(toFace node: SKNode) {
         let angle = atan2(node.position.y - position.y, node.position.x - position.x)
