@@ -9,24 +9,28 @@
 /* Begin PBXBuildFile section */
 		FE3364892B8A8BEC006B32DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3364882B8A8BEC006B32DE /* AppDelegate.swift */; };
 		FE33648B2B8A8BEC006B32DE /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = FE33648A2B8A8BEC006B32DE /* GameScene.sks */; };
-		FE33648D2B8A8BEC006B32DE /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = FE33648C2B8A8BEC006B32DE /* Actions.sks */; };
 		FE33648F2B8A8BEC006B32DE /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE33648E2B8A8BEC006B32DE /* GameScene.swift */; };
 		FE3364912B8A8BEC006B32DE /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3364902B8A8BEC006B32DE /* GameViewController.swift */; };
 		FE3364942B8A8BEC006B32DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE3364922B8A8BEC006B32DE /* Main.storyboard */; };
 		FE3364962B8A8BEE006B32DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE3364952B8A8BEE006B32DE /* Assets.xcassets */; };
 		FE3364992B8A8BEE006B32DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FE3364972B8A8BEE006B32DE /* LaunchScreen.storyboard */; };
+		FE3364C72B8A9949006B32DE /* MarsTiles.sks in Resources */ = {isa = PBXBuildFile; fileRef = FE3364C62B8A9949006B32DE /* MarsTiles.sks */; };
+		FE3364C92B8A9FD0006B32DE /* Rover.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3364C82B8A9FD0006B32DE /* Rover.swift */; };
+		FE3364CB2B8ABFF6006B32DE /* Rock.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3364CA2B8ABFF6006B32DE /* Rock.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		FE3364852B8A8BEC006B32DE /* Robot Miner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Robot Miner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE3364882B8A8BEC006B32DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FE33648A2B8A8BEC006B32DE /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		FE33648C2B8A8BEC006B32DE /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		FE33648E2B8A8BEC006B32DE /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		FE3364902B8A8BEC006B32DE /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		FE3364932B8A8BEC006B32DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FE3364952B8A8BEE006B32DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FE3364982B8A8BEE006B32DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		FE3364C62B8A9949006B32DE /* MarsTiles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MarsTiles.sks; sourceTree = "<group>"; };
+		FE3364C82B8A9FD0006B32DE /* Rover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rover.swift; sourceTree = "<group>"; };
+		FE3364CA2B8ABFF6006B32DE /* Rock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rock.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,11 +65,13 @@
 			children = (
 				FE3364882B8A8BEC006B32DE /* AppDelegate.swift */,
 				FE33648A2B8A8BEC006B32DE /* GameScene.sks */,
-				FE33648C2B8A8BEC006B32DE /* Actions.sks */,
 				FE33648E2B8A8BEC006B32DE /* GameScene.swift */,
+				FE3364CA2B8ABFF6006B32DE /* Rock.swift */,
+				FE3364C82B8A9FD0006B32DE /* Rover.swift */,
 				FE3364902B8A8BEC006B32DE /* GameViewController.swift */,
 				FE3364922B8A8BEC006B32DE /* Main.storyboard */,
 				FE3364952B8A8BEE006B32DE /* Assets.xcassets */,
+				FE3364C62B8A9949006B32DE /* MarsTiles.sks */,
 				FE3364972B8A8BEE006B32DE /* LaunchScreen.storyboard */,
 			);
 			path = "Robot Miner";
@@ -130,10 +136,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE3364942B8A8BEC006B32DE /* Main.storyboard in Resources */,
+				FE3364C72B8A9949006B32DE /* MarsTiles.sks in Resources */,
 				FE33648B2B8A8BEC006B32DE /* GameScene.sks in Resources */,
 				FE3364962B8A8BEE006B32DE /* Assets.xcassets in Resources */,
 				FE3364992B8A8BEE006B32DE /* LaunchScreen.storyboard in Resources */,
-				FE33648D2B8A8BEC006B32DE /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,7 +150,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE3364C92B8A9FD0006B32DE /* Rover.swift in Sources */,
 				FE33648F2B8A8BEC006B32DE /* GameScene.swift in Sources */,
+				FE3364CB2B8ABFF6006B32DE /* Rock.swift in Sources */,
 				FE3364912B8A8BEC006B32DE /* GameViewController.swift in Sources */,
 				FE3364892B8A8BEC006B32DE /* AppDelegate.swift in Sources */,
 			);
