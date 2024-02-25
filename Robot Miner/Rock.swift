@@ -13,6 +13,7 @@ struct Rock {
     var position = CGPoint(x: 0, y: 0)
     var texture = SKTexture(image: .crystals1)
 
-    var value = 10.0
+    var value = 10
     var remaining = 1.0
+    var name = ""
 }

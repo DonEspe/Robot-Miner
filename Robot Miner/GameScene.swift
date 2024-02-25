@@ -14,7 +14,13 @@ class GameScene: SKScene {
     var redRover = SKSpriteNode()
     var player = Rover()
     var rover = SKSpriteNode()
+    var scoreLabel = SKLabelNode(text: "Score: 0")
     var rocks = [String: Rock]()
+    var score = 0 {
+        didSet {
+            scoreLabel.text = "Score: \(score)"
+        }
+    }
 
     override func didMove(to view: SKView) {
         self.backgroundColor = .black
@@ -33,60 +39,27 @@ class GameScene: SKScene {
         player.sprite.name = "player"
         addChild(player.sprite)
 
-        for i in 0...10 {
+        scoreLabel.position = CGPoint(x: 0, y: 300)
+        camera?.addChild(scoreLabel)
+
+        for i in 0...30 {
             let crystal = SKSpriteNode(texture: .init(image: .crystals1))
-            crystal.position.x = CGFloat.random(in: -150...150)
-            crystal.position.y = CGFloat.random(in: -350...350)
+            crystal.position.x = CGFloat.random(in: -500...500)
+            crystal.position.y = CGFloat.random(in: -1000...1000)
             crystal.name = "rock" + String(i)
 
-            rocks[crystal.name ?? ""] = (Rock(position: crystal.position, texture: crystal.texture ?? .init(image: .rockGreyLarge), value: Double.random(in: 1...40), remaining: 1.0))
+            rocks[crystal.name ?? ""] = (Rock(position: crystal.position, texture: crystal.texture ?? .init(image: .rockGreyLarge), value: Int.random(in: 1...40), remaining: 1.0, name: crystal.name ?? ""))
             addChild(crystal)
         }
-
-//        blueRover = SKSpriteNode(texture: .init(image: .robot3Dblue))
-//        blueRover.position = CGPoint(x: 20, y: 20)
-//        addChild(blueRover)
-//
-//        redRover = SKSpriteNode(texture: .init(image: .robot3Dred))
-//        redRover.position = CGPoint(x: 75, y: 75)
-//        redRover.color = .green
-//        redRover.blendMode = .multiply
-//        addChild(redRover)
     }
     
     
     func touchDown(atPoint pos : CGPoint) {
         player.moveTo = pos
-//        player.sprite.removeAllActions()
-//        player.position = rover.position
-//        let angle = player.rotate(toPoint: pos)
-////        rover.zRotation = angle
-//        let move = SKAction.sequence([
-//            .move(to: pos, duration: 0.01 * player.distance(toPoint: pos))])
-////        blueRover.position = pos
-//        let angleChange = abs(player.sprite.zRotation - angle)
-//        let rotate = SKAction.sequence([.rotate(toAngle: angle, duration: 0.1 * angleChange, shortestUnitArc: true)])
-//        let seq = SKAction.sequence([rotate, move])
-//        player.sprite.run(move)
-//        player.sprite.run(rotate)
-//        player.position = rover.position
     }
     
     func touchMoved(toPoint pos : CGPoint) {
         player.moveTo = pos
-        //        player.position = rover.position
-//        let angle = player.rotate(toPoint: pos)
-//        //        rover.zRotation = angle
-//        let move = SKAction.sequence([
-//            .move(to: pos, duration: 0.01 * player.distance(toPoint: pos))])
-//        //        blueRover.position = pos
-//        let angleChange = abs(player.sprite.zRotation - angle)
-//        let rotate = SKAction.sequence([.rotate(toAngle: angle, duration: 0.1 * angleChange, shortestUnitArc: true)])
-//        let seq = SKAction.sequence([rotate, move])
-//        player.sprite.run(rotate)
-//        player.sprite.run(move)
-        //        player.position = rover.position
-
     }
     
     func touchUp(atPoint pos : CGPoint) {
@@ -149,21 +122,33 @@ class GameScene: SKScene {
     }
 
     func moveCamera() {
-        print("player x", player.position.x, ", camera x: ", camera?.position.x, ", sceneSize: ", scene?.size)
-        let yDist = player.position.y - (camera?.position.y)!
+        guard camera != nil else { return }
+        guard scene != nil else { return }
+
+        let yDist = player.position.y - (camera!.position.y)
         if yDist > ((scene?.size.height )! / 2) - 200 {
-            camera?.position.y += 2.0
+            camera!.position.y += 2.0
         }
         if yDist < -((scene?.size.height)! / 2 - 200){
-            camera?.position.y -= 2.0
+            camera!.position.y -= 2.0
         }
-        let xDist = player.position.x - (camera?.position.x)!
-        if xDist > ((scene?.size.width)! / 2) - 100 {
-            camera?.position.x += 2.0
+        let xDist = player.position.x - (camera!.position.x)
+        if xDist > ((scene?.size.width)! / 2) - 150 {
+            camera!.position.x += 2.0
         }
-        if xDist < -(((scene?.size.width)! / 2) - 100) {
-            camera?.position.x -= 2.0
+        if xDist < -(((scene?.size.width)! / 2) - 150) {
+            camera!.position.x -= 2.0
         }
+    }
+
+    func checkForRocks(position: CGPoint, range: CGFloat) -> [Rock] {
+        var foundRock = [Rock]()
+        for rock in rocks {
+            if abs(rock.value.position.x - position.x) < range && abs(rock.value.position.y - position.y) < range {
+                foundRock.append(rock.value)
+            }
+        }
+        return foundRock
     }
 
     override func update(_ currentTime: TimeInterval) {
@@ -174,11 +159,26 @@ class GameScene: SKScene {
         player.position = moveRover(rover: player)
         player.sprite.position = player.position
 
+        let foundRocks = checkForRocks(position: player.position, range: player.sprite.size.width / 2 + 15)
+
+        if !foundRocks.isEmpty {
+            player.moveTo = player.position
+        }
+        print("before:", rocks.count)
+
+        for rock in foundRocks {
+            for node in self.children {
+                if node.name == rock.name {
+                    node.removeFromParent()
+                }
+            }
+            score += rock.value
+            rocks[rock.name] = nil
+        }
+        print("after: ", rocks.count)
+
         displayRocks(list: rocks)
 
         moveCamera()
-
-
-        // Called before each frame is rendered
     }
 }
